@@ -25,7 +25,7 @@ class Dfa {
   States f_;
 
   Terminals terminals_{GetTerminals(table_)};
-  States states_{GetStates(table_)};
+  States states_{GetStates(table_, s_, f_)};
 
  public:
   template<typename DfaTableType, typename StatesType>
@@ -198,7 +198,7 @@ class Dfa {
     return res;
   }
 
-  [[nodiscard]] static States GetStates(const DfaTable &table) {
+  [[nodiscard]] static States GetStates(const DfaTable &table, StateId s, const States &f) {
     States states;
     for (const auto &[state_id, trans_table] : table) {
       states.insert(state_id);
@@ -206,6 +206,8 @@ class Dfa {
         states.insert(next_state_id);
       }
     }
+    states.insert(s);
+    states.insert(f.begin(), f.end());
     return states;
   }
 
