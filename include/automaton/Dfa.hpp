@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AutomatonInclude.hpp"
+#include "FaGraph.hpp"
 
 #ifdef GTEST
 #define protected public
@@ -209,62 +210,22 @@ class Dfa {
   }
 
   [[nodiscard]] static Dfa RemoveUnreachableState(const Dfa &dfa) {
-    using DfaGraph = std::unordered_map<StateId, std::vector<std::pair<StateId, Terminal>>>;
-
-    auto to_graph = [](const DfaTable &dfa_table) -> DfaGraph {
-      DfaGraph res;
+    auto to_graph = [](const DfaTable &dfa_table) -> UnweightedFaGraph {
+      UnweightedFaGraph res;
       for (const auto &[state_id, trans_table] : dfa_table) {
         for (const auto &[terminal, next_state_id] : trans_table) {
           if (res.find(state_id) == res.end()) { res[state_id] = {}; }
-          res[state_id].emplace_back(std::make_pair(next_state_id, terminal));
+          res[state_id].insert(next_state_id);
         }
       }
-      return res;
-    };
-
-    auto reverse_graph = [](const DfaGraph &dfa_graph) -> DfaGraph {
-      DfaGraph res;
-      for (const auto &[state_id, edges] : dfa_graph) {
-        for (const auto &[next_id, terminal] : edges) {
-          if (res.find(next_id) == res.end()) { res[next_id] = {}; }
-          res[next_id].emplace_back(std::make_pair(state_id, terminal));
-        }
-      }
-      return res;
-    };
-
-    auto get_reachable = [](const DfaGraph &dfa_graph, const States &s) -> UnorderedStates {
-      UnorderedStates res;
-      std::queue<StateId> q;
-
-      for (const auto &state_id : s) {
-        q.push(state_id);
-        res.insert(state_id);
-      }
-
-      while (!q.empty()) {
-        StateId cur = q.front();
-        q.pop();
-
-        if (dfa_graph.find(cur) == dfa_graph.end()) continue;
-        auto &edges = dfa_graph.find(cur)->second;
-
-        for (const auto &[state_id, _] : edges) {
-          if (res.find(state_id) == res.end()) {
-            res.insert(state_id);
-            q.push(state_id);
-          }
-        }
-      }
-
       return res;
     };
 
     auto graph = to_graph(dfa.table_);
-    auto rev_graph = reverse_graph(graph);
+    auto rev_graph = ReverseFaGraph(graph);
 
-    auto s_reachable = get_reachable(graph, {dfa.s_});
-    auto f_reachable = get_reachable(rev_graph, dfa.f_);
+    auto s_reachable = GetReachable(graph, {dfa.s_});
+    auto f_reachable = GetReachable(rev_graph, dfa.f_);
 
     auto unordered_set_intersection = [](const auto a, const auto b) {
       auto unordered_set_intersection = [](const auto &less, const auto &great) {
