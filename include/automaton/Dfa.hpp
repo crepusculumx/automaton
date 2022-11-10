@@ -11,8 +11,6 @@ namespace automaton {
 
 class Dfa {
  public:
-  using UnorderedStates = std::unordered_set<StateId>;
-
   using Terminal = char;
   using Terminals = std::set<Terminal>;
   using UnorderedTerminals = std::unordered_set<Terminal>;

@@ -17,4 +17,5 @@
 namespace automaton {
 using StateId = size_t;
 using States = std::set<StateId>;
+using UnorderedStates = std::unordered_set<StateId>;
 }
