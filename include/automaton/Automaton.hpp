@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Dfa.hpp"
+#include "Nfa.hpp"
 
 namespace automaton {
 
