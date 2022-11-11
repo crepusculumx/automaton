@@ -79,4 +79,26 @@ Nfa RandomNfa(const std::vector<Nfa::Terminal> &terminals, size_t StateSize) {
   return {std::move(nfa_table), RandomGetOne(states), RandomSubset<ArrStates, States>(states)};
 }
 
+EpsilonNfa RandomEpsilonNfa(const std::vector<Nfa::Terminal> &terminals, size_t StateSize) {
+  using ArrStates = std::vector<StateId>;
+  ArrStates states;
+  for (size_t i = 0; i < StateSize; i++) {
+    states.push_back(i);
+  }
+
+  EpsilonNfa::EpsilonNfaTable epsilon_nfa_table;
+
+  ArrStates u_states = RandomSubset(states);
+  for (const auto &state_id : u_states) {
+    epsilon_nfa_table[state_id] = {};
+    auto cur_terminals = RandomSubset(terminals);
+    for (const auto &terminal : cur_terminals) {
+      epsilon_nfa_table[state_id].terminal_trans_table[terminal] = RandomSubset<ArrStates, States>(states);
+    }
+    epsilon_nfa_table[state_id].epsilon_trans_table = RandomSubset<ArrStates, States>(states);
+  }
+
+  return {std::move(epsilon_nfa_table), RandomGetOne(states), RandomSubset<ArrStates, States>(states)};
+}
+
 }
