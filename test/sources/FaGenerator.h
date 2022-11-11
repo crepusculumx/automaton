@@ -58,4 +58,25 @@ Dfa RandomDfa(const std::vector<Dfa::Terminal> &terminals, size_t StateSize) {
   return {std::move(dfa_table), RandomGetOne(states), RandomSubset<ArrStates, States>(states)};
 }
 
+Nfa RandomNfa(const std::vector<Nfa::Terminal> &terminals, size_t StateSize) {
+  using ArrStates = std::vector<StateId>;
+  ArrStates states;
+  for (size_t i = 0; i < StateSize; i++) {
+    states.push_back(i);
+  }
+
+  Nfa::NfaTable nfa_table;
+
+  ArrStates u_states = RandomSubset(states);
+  for (const auto &state_id : u_states) {
+    nfa_table[state_id] = {};
+    auto cur_terminals = RandomSubset(terminals);
+    for (const auto &terminal : cur_terminals) {
+      nfa_table[state_id][terminal] = RandomSubset<ArrStates, States>(states);
+    }
+  }
+
+  return {std::move(nfa_table), RandomGetOne(states), RandomSubset<ArrStates, States>(states)};
+}
+
 }
