@@ -2,6 +2,7 @@
 
 #include "Dfa.hpp"
 #include "Nfa.hpp"
+#include "EpsilonNfa.hpp"
 
 namespace automaton {
 
@@ -24,7 +25,9 @@ bool IsEquivalentEnumeration(Automaton1 a1, Automaton2 a2) {
           &terminals
       ](size_t len, std::vector<typename Automaton1::Terminal> &str) {
         if (len > max_len) return true;
-        if (a1.IsAccepted(str) ^ a2.IsAccepted(str)) return false;
+        if (a1.IsAccepted(str) ^ a2.IsAccepted(str)) {
+          return false;
+        }
         for (const auto &terminal : terminals) {
           str.push_back(terminal);
           auto res = dfs(len + 1, str);

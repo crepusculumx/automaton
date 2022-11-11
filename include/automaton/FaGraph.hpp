@@ -18,13 +18,13 @@ UnweightedFaGraph ReverseFaGraph(const UnweightedFaGraph &graph) {
 }
 
 /**
- * state in s will always be in result, because graph only stores edges.
- * @param graph
- * @param s start states.
- * @return
+ * state in s will always be in result, because graph may only stores edges.
+ * @tparam StatesContainer States, UnorderedStates
+ * @tparam VContainer States, UnorderedStates
  */
-UnorderedStates GetReachable(const UnweightedFaGraph &graph, const States &s) {
-  UnorderedStates res;
+template<typename StatesContainer = States, typename VContainer = UnorderedStates>
+VContainer GetReachable(const UnweightedFaGraph &graph, const StatesContainer &s) {
+  VContainer res;
   std::queue<StateId> q;
 
   for (const auto &state_id : s) {
@@ -36,7 +36,7 @@ UnorderedStates GetReachable(const UnweightedFaGraph &graph, const States &s) {
     StateId cur = q.front();
     q.pop();
 
-    if (graph.find(cur) == graph.end()) continue;
+    if (graph.find(cur) == graph.end()) { continue; }
     auto &vs = graph.find(cur)->second;
 
     for (const auto &v : vs) {
