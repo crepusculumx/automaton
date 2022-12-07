@@ -156,7 +156,7 @@ class Dfa {
     return {dfa_table, new_id_table[s_], f};
   }
 
-  std::string ToRG() {
+  std::string ToRg() {
     std::stringstream string_stream;
     using OrderedTransTable = std::map<Terminal, StateId>;
     using OrderedDfaTable = std::map<StateId, OrderedTransTable>;
