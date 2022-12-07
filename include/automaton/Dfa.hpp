@@ -386,7 +386,7 @@ class Dfa {
     push_if_not_empty(final_states);
     push_if_not_empty(none_final_states);
 
-    do {
+    while (true) {
       bool success_split_flag = false;
 
       // for each split, try to split more
@@ -419,8 +419,7 @@ class Dfa {
 
       if (!success_split_flag) { break; }
       else { std::swap(work_q, wait_q); }
-
-    } while (true);
+    }
 
     while (!wait_q.empty()) {
       splits.emplace(std::move(wait_q.front()));
@@ -442,7 +441,7 @@ class Dfa {
       StateId cur_state_id = *(split.begin());
       auto split_id = split_table[cur_state_id];
 
-      if (dfa.table_.find(cur_state_id) == dfa.table_.end()) continue;
+      if (dfa.table_.find(cur_state_id) == dfa.table_.end()) { continue; }
       const TransTable &trans_table = dfa.table_.find(cur_state_id)->second;
 
       TransTable new_trans_table;
