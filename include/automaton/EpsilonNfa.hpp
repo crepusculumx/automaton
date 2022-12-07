@@ -166,8 +166,8 @@ class EpsilonNfa {
       while (!q.empty()) {
         auto cur = q.front();
         q.pop();
-        if (closure_table.find(s) != closure_table.end()) {
-          const auto &closure = closure_table.find(s)->second;
+        if (closure_table.find(cur) != closure_table.end()) {
+          const auto &closure = closure_table.find(cur)->second;
           res.insert(closure.begin(), closure.end());
           continue;
         }
