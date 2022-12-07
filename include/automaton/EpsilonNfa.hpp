@@ -231,32 +231,30 @@ class EpsilonNfa {
     }
 
     States f;
-    auto graph = ToEpsilonUnweightedFaGraph(epsilon_nfa);
+
+    // only epsilon
+    auto to_fa_graph = [](const EpsilonNfa &epsilon_nfa) {
+      const auto &states = epsilon_nfa.states_;
+      const auto &table = epsilon_nfa.table_;
+
+      UnweightedFaGraph res;
+
+      for (const auto &state : states) {
+        res[state] = {};
+        if (table.find(state) == table.end()) { continue; }
+        auto trans_table = table.find(state)->second;
+        res[state].insert(trans_table.epsilon_trans_table.begin(), trans_table.epsilon_trans_table.end());
+      }
+
+      return res;
+    };
+
+    auto graph = to_fa_graph(epsilon_nfa);
     auto reverse_graph = ReverseFaGraph(graph);
 
     return {nfa_table, epsilon_nfa.s_, GetReachable<States, States>(reverse_graph, epsilon_nfa.f_)};
   }
 
-  /**
-   * graph only with epsilon edge.
-   * @param epsilon_nfa
-   * @return
-   */
-  static UnweightedFaGraph ToEpsilonUnweightedFaGraph(const EpsilonNfa &epsilon_nfa) {
-    const auto &states = epsilon_nfa.states_;
-    const auto &table = epsilon_nfa.table_;
-
-    UnweightedFaGraph res;
-
-    for (const auto &state : states) {
-      res[state] = {};
-      if (table.find(state) == table.end()) { continue; }
-      auto trans_table = table.find(state)->second;
-      res[state].insert(trans_table.epsilon_trans_table.begin(), trans_table.epsilon_trans_table.end());
-    }
-
-    return res;
-  }
 };
 
 }
