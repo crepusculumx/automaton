@@ -6,7 +6,7 @@ namespace automaton {
 
 using UnweightedFaGraph = std::unordered_map<StateId, UnorderedStates>;
 
-UnweightedFaGraph ReverseFaGraph(const UnweightedFaGraph &graph) {
+[[nodiscard]] UnweightedFaGraph ReverseFaGraph(const UnweightedFaGraph &graph) {
   UnweightedFaGraph res;
   for (const auto &[u, vs] : graph) {
     for (const auto &v : vs) {
@@ -23,7 +23,7 @@ UnweightedFaGraph ReverseFaGraph(const UnweightedFaGraph &graph) {
  * @tparam VContainer States, UnorderedStates
  */
 template<typename StatesContainer = States, typename VContainer = UnorderedStates>
-VContainer GetReachable(const UnweightedFaGraph &graph, const StatesContainer &s) {
+[[nodiscard]] VContainer GetReachable(const UnweightedFaGraph &graph, const StatesContainer &s) {
   VContainer res;
   std::queue<StateId> q;
 

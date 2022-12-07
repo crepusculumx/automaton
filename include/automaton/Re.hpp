@@ -14,16 +14,16 @@ class Re {
  public:
   explicit Re(std::string regular_expression) : regular_expression_(std::move(regular_expression)) {}
 
-  bool IsAccepted(std::string_view string_view) {
+  [[nodiscard]] bool IsAccepted(std::string_view string_view) const {
     return dfa_.IsAccepted(string_view.begin(), string_view.end());
   }
 
-  bool IsAccepted(const char *str) {
+  [[nodiscard]] bool IsAccepted(const char *str) const {
     std::string_view string_view{str};
     return dfa_.IsAccepted(string_view.begin(), string_view.end());
   }
 
-  EpsilonNfa ToEpsilonNfa() {
+  [[nodiscard]] EpsilonNfa ToEpsilonNfa() const {
     return ToEpsilonNfa(regular_expression_);
   }
 
@@ -31,11 +31,11 @@ class Re {
 
   static const std::unordered_set<char> operators;
 
-  static bool IsNotOperator(char c) {
+  [[nodiscard]] static bool IsNotOperator(char c) {
     return operators.find(c) == operators.end();
   }
 
-  static std::string AddTimesSign(const std::string &str) {
+  [[nodiscard]] static std::string AddTimesSign(const std::string &str) {
     if (str.empty()) return str;
 
     std::string res;
@@ -55,7 +55,7 @@ class Re {
     return res;
   }
 
-  static std::string ToPostfixExpression(const std::string &str) {
+  [[nodiscard]] static std::string ToPostfixExpression(const std::string &str) {
     auto re = AddTimesSign(str);
 
     std::stack<char> s;
@@ -111,7 +111,7 @@ class Re {
     return res;
   }
 
-  static EpsilonNfa ToEpsilonNfa(const std::string &str) {
+  [[nodiscard]] static EpsilonNfa ToEpsilonNfa(const std::string &str) {
     auto pe = ToPostfixExpression(str);
     EpsilonNfa::EpsilonNfaTable table;
 

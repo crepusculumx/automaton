@@ -34,26 +34,26 @@ class Nfa {
       s_(s),
       f_(std::forward<StatesType>(f)) {}
 
-  size_t StateSize() const {
+  [[nodiscard]] size_t StateSize() const {
     return states_.size();
   }
 
-  const Terminals &GetTerminals() const {
+  [[nodiscard]] const Terminals &GetTerminals() const {
     return terminals_;
   }
 
   template<typename Container>
-  bool IsAccepted(const Container &container) {
+  [[nodiscard]] bool IsAccepted(const Container &container) const {
     return IsAccepted(container.begin(), container.end());
   }
 
-  bool IsAccepted(const char *str) {
+  [[nodiscard]] bool IsAccepted(const char *str) const {
     std::string_view string_view{str};
     return IsAccepted(string_view.begin(), string_view.end());
   }
 
   template<typename ForwardIterator>
-  bool IsAccepted(ForwardIterator fist, ForwardIterator last) {
+  [[nodiscard]] bool IsAccepted(ForwardIterator fist, ForwardIterator last) const {
     std::set<std::pair<StateId, ForwardIterator>> memo;
     std::function<bool(StateId cur_state_id, ForwardIterator it)>
         dfs =
@@ -73,13 +73,13 @@ class Nfa {
             memo.insert(std::make_pair(cur_state_id, it));
             return false;
           }
-          TransTable &trans_table = table.find(cur_state_id)->second;
+          const TransTable &trans_table = table.find(cur_state_id)->second;
 
           if (trans_table.find(*it) == trans_table.end()) {
             memo.insert(std::make_pair(cur_state_id, it));
             return false;
           }
-          States &next_states = trans_table.find(*it)->second;
+          const States &next_states = trans_table.find(*it)->second;
 
           for (const auto &next_state_id : next_states) {
             ForwardIterator next_it = it;
@@ -92,13 +92,13 @@ class Nfa {
     return dfs(s_, fist);
   }
 
-  Dfa ToDfa() const {
+  [[nodiscard]] Dfa ToDfa() const {
     return ToDfa(*this);
   }
 
  private:
 
-  static Terminals GetTerminals(const NfaTable &nfa_table) {
+  [[nodiscard]] static Terminals GetTerminals(const NfaTable &nfa_table) {
     Terminals res;
     for (const auto &[_, trans_table] : nfa_table) {
       for (auto &[terminal, _1] : trans_table) {
@@ -108,7 +108,7 @@ class Nfa {
     return res;
   }
 
-  static States GetStates(const NfaTable &nfa_table, StateId s, const States &f) {
+  [[nodiscard]] static States GetStates(const NfaTable &nfa_table, StateId s, const States &f) {
     States res;
     for (const auto &[state_id, trans_table] : nfa_table) {
       res.insert(state_id);
@@ -124,7 +124,7 @@ class Nfa {
     return res;
   }
 
-  static Dfa ToDfa(const Nfa &nfa) {
+  [[nodiscard]] static Dfa ToDfa(const Nfa &nfa) {
     std::map<States, TransTable> subset_table; // subset -> {terminal, states}
 
     std::queue<States> q;

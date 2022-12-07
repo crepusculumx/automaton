@@ -44,28 +44,28 @@ class EpsilonNfa {
         s_(s),
         f_(std::forward<StatesType>(f)) {}
 
-  Nfa ToNfa() const {
+  [[nodiscard]] Nfa ToNfa() const {
     return ToNfa(*this);
   }
 
-  const Terminals &GetTerminals() const {
+  [[nodiscard]] const Terminals &GetTerminals() const {
     return terminals_;
   }
 
-  const States &GetStates() const {
+  [[nodiscard]] const States &GetStates() const {
     return states_;
   }
 
-  size_t StateSize() const {
+  [[nodiscard]] size_t StateSize() const {
     return states_.size();
   }
 
   template<typename Container>
-  bool IsAccepted(const Container &container) const {
+  [[nodiscard]] bool IsAccepted(const Container &container) const {
     return IsAccepted(container.begin(), container.end());
   }
 
-  bool IsAccepted(const char *str) const {
+  [[nodiscard]] bool IsAccepted(const char *str) const {
     std::string_view string_view{str};
     return IsAccepted(string_view.begin(), string_view.end());
   }
@@ -121,7 +121,7 @@ class EpsilonNfa {
     return dfs(s_, fist, true);
   }
 
-  static States GetStates(const EpsilonNfaTable &table, StateId s, const States &f) {
+  [[nodiscard]] static States GetStates(const EpsilonNfaTable &table, StateId s, const States &f) {
     States res;
     for (const auto &[state_id, trans_table] : table) {
       res.insert(state_id);
@@ -137,7 +137,7 @@ class EpsilonNfa {
     return res;
   }
 
-  static Terminals GetTerminals(const EpsilonNfaTable &table) {
+  [[nodiscard]] static Terminals GetTerminals(const EpsilonNfaTable &table) {
     Terminals res;
     for (const auto &[state_id, trans_table] : table) {
       for (const auto &[terminal, next_states] : trans_table.terminal_trans_table) {
@@ -147,7 +147,7 @@ class EpsilonNfa {
     return res;
   }
 
-  static ClosureTable GetClosureTable(const EpsilonNfaTable &table, const States &states) {
+  [[nodiscard]] static ClosureTable GetClosureTable(const EpsilonNfaTable &table, const States &states) {
     ClosureTable closure_table;
 
     auto bfs = [
@@ -187,7 +187,7 @@ class EpsilonNfa {
     return closure_table;
   }
 
-  static Nfa ToNfa(const EpsilonNfa &epsilon_nfa) {
+  [[nodiscard]] static Nfa ToNfa(const EpsilonNfa &epsilon_nfa) {
     const auto &table = epsilon_nfa.table_;
     const auto &states = epsilon_nfa.states_;
     const auto &closure_table = epsilon_nfa.closure_table_;
