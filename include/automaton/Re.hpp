@@ -22,6 +22,11 @@ class Re {
     std::string_view string_view{str};
     return dfa_.IsAccepted(string_view.begin(), string_view.end());
   }
+
+  EpsilonNfa ToEpsilonNfa() {
+    return ToEpsilonNfa(regular_expression_);
+  }
+
  private:
 
   static const std::unordered_set<char> operators;
