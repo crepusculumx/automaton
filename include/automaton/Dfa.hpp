@@ -156,6 +156,46 @@ class Dfa {
     return {dfa_table, new_id_table[s_], f};
   }
 
+  std::string ToRG() {
+    std::stringstream string_stream;
+    using OrderedTransTable = std::map<Terminal, StateId>;
+    using OrderedDfaTable = std::map<StateId, OrderedTransTable>;
+
+    auto to_ordered_table = [](const DfaTable &table) {
+
+      auto to_ordered_transTable = [](const TransTable &trans_table) {
+        OrderedTransTable res;
+        for (const auto &item : trans_table) {
+          res.insert(std::make_pair(item.first, item.second));
+        }
+        return res;
+      };
+
+      OrderedDfaTable res;
+      for (const auto &[state, trans_table] : table) {
+        res.insert(std::make_pair(state, to_ordered_transTable(trans_table)));
+      }
+      return res;
+    };
+
+    OrderedDfaTable table = to_ordered_table(table_);
+
+    for (const auto &[state, trans_table] : table) {
+      // form of q0->0q1
+      for (const auto &[terminal, next_state] : trans_table) {
+        if (table[next_state].empty()) { continue; }
+        string_stream << "q" << state << "->" << terminal << "q" << next_state << std::endl;
+      }
+
+      // form of q0->0
+      for (const auto &[terminal, next_state] : trans_table) {
+        if (f_.find(next_state) == f_.end()) { continue; }
+        string_stream << "q" << state << "->" << terminal << std::endl;;
+      }
+    }
+    return string_stream.str();
+  }
+
  private:
 
   template<typename VContainerType = Terminals>
@@ -210,6 +250,8 @@ class Dfa {
     states.insert(f.begin(), f.end());
     return states;
   }
+
+//  [[nodiscard]] static
 
   [[nodiscard]] static Dfa RemoveUnreachableState(const Dfa &dfa) {
     auto to_graph = [](const DfaTable &dfa_table) -> UnweightedFaGraph {
