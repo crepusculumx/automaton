@@ -14,6 +14,10 @@ class Re {
  public:
   explicit Re(std::string regular_expression) : regular_expression_(std::move(regular_expression)) {}
 
+  bool IsAccepted(std::string_view string_view) {
+    return dfa_.IsAccepted(string_view.begin(), string_view.end());
+  }
+
   bool IsAccepted(const char *str) {
     std::string_view string_view{str};
     return dfa_.IsAccepted(string_view.begin(), string_view.end());
