@@ -43,7 +43,7 @@ class Re {
     for (size_t i = 1; i < str.size(); ++i) {
       if (IsNotOperator(str[i - 1]) && IsNotOperator(str[i]) ||
           IsNotOperator(str[i - 1]) && str[i] == '(' ||
-          str[i] == ')' && IsNotOperator(str[i]) ||
+          str[i - 1] == ')' && IsNotOperator(str[i]) ||
           str[i - 1] == ')' && str[i] == '(' ||
           str[i - 1] == '*' && IsNotOperator(str[i]) ||
           str[i - 1] == '*' && str[i] == '('
