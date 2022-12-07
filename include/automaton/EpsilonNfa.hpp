@@ -91,7 +91,7 @@ class EpsilonNfa {
         });
       }
 
-      if (table.find(cur_state) == table.end()) return false;
+      if (table.find(cur_state) == table.end()) { return false; }
       const TransTable &trans_table = table.find(cur_state)->second;
 
       const auto &terminal_trans_table = trans_table.terminal_trans_table;
@@ -103,7 +103,7 @@ class EpsilonNfa {
         ++next_it;
         for (const auto &next_state : next_states) {
           auto res = dfs(next_state, next_it, true);
-          if (res) return res;
+          if (res) { return res; }
         }
       }
 
@@ -112,7 +112,7 @@ class EpsilonNfa {
         const auto &closure = closure_table.find(cur_state)->second;
         for (const auto &next_state : closure) {
           auto res = dfs(next_state, it, false);
-          if (res) return res;
+          if (res) { return res; }
         }
       }
       return false;
@@ -147,9 +147,6 @@ class EpsilonNfa {
     return res;
   }
 
-  /**
-   * @warning state_id is also in the set
-   */
   static ClosureTable GetClosureTable(const EpsilonNfaTable &table, const States &states) {
     ClosureTable closure_table;
 
@@ -252,7 +249,7 @@ class EpsilonNfa {
     auto graph = to_fa_graph(epsilon_nfa);
     auto reverse_graph = ReverseFaGraph(graph);
 
-    return {nfa_table, epsilon_nfa.s_, GetReachable<States, States>(reverse_graph, epsilon_nfa.f_)};
+    return {std::move(nfa_table), epsilon_nfa.s_, GetReachable<States, States>(reverse_graph, epsilon_nfa.f_)};
   }
 
 };

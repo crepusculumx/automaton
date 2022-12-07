@@ -64,7 +64,7 @@ class Nfa {
             &last,
             &memo
         ](StateId cur_state_id, ForwardIterator it) {
-          if (memo.find(std::make_pair(cur_state_id, it)) != memo.end()) return false;
+          if (memo.find(std::make_pair(cur_state_id, it)) != memo.end()) { return false; }
           if (it == last) {
             if (f.find(cur_state_id) != f.end()) { return true; }
             return false;
@@ -84,8 +84,7 @@ class Nfa {
           for (const auto &next_state_id : next_states) {
             ForwardIterator next_it = it;
             next_it++;
-            auto res = dfs(next_state_id, next_it);
-            if (res) return true;
+            if (dfs(next_state_id, next_it)) { return true; }
           }
           memo.insert(std::make_pair(cur_state_id, it));
           return false;
@@ -143,7 +142,7 @@ class Nfa {
       TransTable &cur_trans_table = subset_table[cur];
 
       for (const auto &state : cur) {
-        if (nfa.table_.find(state) == nfa.table_.end()) continue;
+        if (nfa.table_.find(state) == nfa.table_.end()) { continue; }
         const TransTable &trans_table = nfa.table_.find(state)->second;
         for (auto &[terminal, states] : trans_table) {
           cur_trans_table[terminal].insert(states.begin(), states.end());
@@ -169,7 +168,7 @@ class Nfa {
       dfa_table[new_ids[subset]] = {};
       auto &cur_trans_table = dfa_table[new_ids[subset]];
 
-      if (subset_table.find(subset) == subset_table.end()) continue;
+      if (subset_table.find(subset) == subset_table.end()) { continue; }
       auto trans_table = subset_table[subset];
 
       for (const auto &[terminal, next_states] : trans_table) {

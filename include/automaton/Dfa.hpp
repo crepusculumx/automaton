@@ -183,7 +183,7 @@ class Dfa {
     for (const auto &[state, trans_table] : table) {
       // form of q0->0q1
       for (const auto &[terminal, next_state] : trans_table) {
-        if (table[next_state].empty()) { continue; }
+//        if (table[next_state].empty()) { continue; }
         string_stream << "q" << state << "->" << terminal << "q" << next_state << std::endl;
       }
 
@@ -275,7 +275,7 @@ class Dfa {
       auto unordered_set_intersection = [](const auto &less, const auto &great) {
         UnorderedStates res;
         for (const auto &item : less) {
-          if (great.find(item) == great.end())continue;
+          if (great.find(item) == great.end()) { continue; }
           res.insert(item);
         }
         return res;
@@ -289,11 +289,11 @@ class Dfa {
 
     DfaTable res_dfa_table;
     for (const auto &[state_id, trans_table] : dfa.table_) {
-      if (reachable_states.find(state_id) == reachable_states.end())continue;
+      if (reachable_states.find(state_id) == reachable_states.end()) { continue; }
 
       TransTable res_trans_table;
       for (const auto &[terminal, next_state_id] : trans_table) {
-        if (reachable_states.find(next_state_id) == reachable_states.end())continue;
+        if (reachable_states.find(next_state_id) == reachable_states.end()) { continue; }
         res_trans_table.insert(std::make_pair(terminal, next_state_id));
       }
       res_dfa_table.insert(std::make_pair(state_id, res_trans_table));
@@ -303,7 +303,7 @@ class Dfa {
 
     States f;
     for (const auto &state_id : dfa.f_) {
-      if (reachable_states.find(state_id) == reachable_states.end())continue;
+      if (reachable_states.find(state_id) == reachable_states.end()) { continue; }
       f.insert(state_id);
     }
 
