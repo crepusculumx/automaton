@@ -43,9 +43,9 @@ class Dfa {
     std::stringstream string_stream;
 
     // head
-    string_stream << "\t\t"; // 6 blank
+    string_stream << "     "; // 6 blank
     for (const auto &terminal : terminals) {
-      string_stream << "\t" << terminal;
+      string_stream << " " << terminal;
     }
     string_stream << std::endl;
 
@@ -55,22 +55,22 @@ class Dfa {
 
       // is start and final
       if (state_id == s_) { string_stream << "(s)"; }
-      string_stream << "\t";
+//      string_stream << "\t";
       if (f_.find(state_id) != f_.end()) { string_stream << "(e)"; }
-      string_stream << "\t";
+//      string_stream << "\t";
       // state id
       string_stream << "q" << state_id;
 
       // for each terminal
       for (const auto &terminal : terminals) {
-        string_stream << "\t";
+        string_stream << " ";
 
         if (table_.find(state_id) != table_.end()
             && table_.find(state_id)->second.find(terminal) != table_.find(state_id)->second.end()) {
           const TransTable &trans_table = table_.find(state_id)->second;
           string_stream << "q" << trans_table.find(terminal)->second;
         } else {
-          string_stream << "#";
+          string_stream << "N";
         }
       }
 
@@ -183,7 +183,7 @@ class Dfa {
     for (const auto &[state, trans_table] : table) {
       // form of q0->0q1
       for (const auto &[terminal, next_state] : trans_table) {
-//        if (table[next_state].empty()) { continue; }
+        if (table[next_state].empty()) { continue; }
         string_stream << "q" << state << "->" << terminal << "q" << next_state << std::endl;
       }
 
